@@ -1,0 +1,108 @@
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+  spark:
+    image: bitnami/spark:3.2.0
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    volumes:
+      - ./spark_stream_v2.py:/opt/spark_streaming/spark_stream_v2.py
+      - ./spark_checkpoint:/opt/spark_streaming/checkpoint
+
+  spark-worker:
+    image: bitnami/spark:3.2.0
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    depends_on:
+      - spark
+
+  spark-submit:
+    image: bitnami/spark:3.2.0
+    command: >
+      bash -c "
+      pip install kafka-python pandas numpy &&
+      /opt/bitnami/spark/bin/spark-submit 
+      --master spark://spark:7077 
+      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.0 
+      --conf spark.streaming.kafka.maxRatePerPartition=100
+      --conf spark.sql.shuffle.partitions=2
+      --conf spark.executor.memory=1g
+      --conf spark.driver.memory=1g
+      /opt/spark_streaming/spark_stream_v2.py"
+    volumes:
+      - ./spark_stream_v2.py:/opt/spark_streaming/spark_stream_v2.py
+      - ./spark_checkpoint:/opt/spark_streaming/checkpoint
+    depends_on:
+      - spark
+      - kafka
+
+  producer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    command: python producer.py
+    depends_on:
+      - kafka
+
+  consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    command: python consumer.py
+    depends_on:
+      - kafka
+      - spark-submit
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8051:8051"
+    volumes:
+      - .:/app
+    command: python dashboard_2.py
+    depends_on:
+      - consumer
+
+volumes:
+  spark_checkpoint:
