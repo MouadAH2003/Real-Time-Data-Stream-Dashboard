@@ -1,6 +1,11 @@
 # Bitcoin Analytics Dashboard
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Kafka](https://img.shields.io/badge/Kafka-2.8+-black.svg)](https://kafka.apache.org/)
+[![Spark](https://img.shields.io/badge/Spark-3.0+-orange.svg)](https://spark.apache.org/)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![Dash/Plotly](https://img.shields.io/badge/Dash/Plotly-Interactive%20Visualization-green.svg)](https://plotly.com/dash/)
+
 
 ## Table of Contents
 
