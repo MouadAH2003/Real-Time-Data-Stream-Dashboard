@@ -27,6 +27,12 @@ The **Bitcoin Analytics Dashboard** is a high-performance, real-time data visual
 
 ---
 
+
+## Architecture Diagram
+
+![Architecture Diagram](./architecture.jpeg)
+
+
 ## Key Features
 
 - **Real-Time Data Streaming**: Leverages Apache Kafka for high-throughput, low-latency data ingestion.
