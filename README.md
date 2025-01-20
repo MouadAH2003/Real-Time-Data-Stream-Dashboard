@@ -6,16 +6,16 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![Dash/Plotly](https://img.shields.io/badge/Dash/Plotly-Interactive%20Visualization-green.svg)](https://plotly.com/dash/)
 
-
 ## Table of Contents
 
 - [About](#about)
-- [Features](#features)
+- [Key Features](#key-features)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Usage](#usage)
-- [Architecture](#architecture)
+- [Architecture Overview](#architecture-overview)
+- [Performance Optimization](#performance-optimization)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
@@ -23,85 +23,156 @@
 
 ## About
 
-The Bitcoin Analytics Dashboard is a real-time data visualization tool that processes Bitcoin market data using Apache Kafka, Apache Spark, and Dash. It provides insights into Bitcoin price trends, technical indicators, and market status.
+The **Bitcoin Analytics Dashboard** is a high-performance, real-time data visualization tool designed to process and analyze Bitcoin market data. Built with **Apache Kafka**, **Apache Spark**, and **Dash**, it provides actionable insights into Bitcoin price trends, technical indicators, and market dynamics. The system is containerized using **Docker** for seamless deployment and scalability.
 
-## Features
+---
 
-- Real-time data streaming and processing using Apache Kafka and Apache Spark.
-- Visualization of Bitcoin price trends, moving averages, Bollinger Bands, and RSI using Dash.
-- Export data to CSV for further analysis.
-- Interactive and responsive dashboard design.
-- Easy setup and deployment using Docker Compose.
+## Key Features
+
+- **Real-Time Data Streaming**: Leverages Apache Kafka for high-throughput, low-latency data ingestion.
+- **Advanced Analytics**: Utilizes Apache Spark for distributed data processing, including moving averages, Bollinger Bands, and RSI calculations.
+- **Interactive Visualizations**: Powered by Dash and Plotly for dynamic, real-time charts and graphs.
+- **Data Export**: Export processed data to CSV for further analysis.
+- **Scalable Architecture**: Designed for horizontal scaling to handle large volumes of data.
+- **Dockerized Deployment**: Easy setup and deployment using Docker Compose.
+
+---
 
 ## Getting Started
 
 ### Prerequisites
 
-Before you begin, ensure you have met the following requirements:
+Before you begin, ensure you have the following installed:
 
-- Docker and Docker Compose installed on your machine.
+- **Docker**: [Install Docker](https://docs.docker.com/get-docker/)
+- **Docker Compose**: [Install Docker Compose](https://docs.docker.com/compose/install/)
 
 ### Installation
 
-1. **Clone the repository:**
+1. **Clone the Repository:**
 
-   ```sh
+   ```bash
    git clone https://github.com/MouadAH2003/BitcoinRealTimeDashboard.git
    cd BitcoinRealTimeDashboard
    ```
 
-2. **Build and run the project using Docker Compose:**
+2. **Build and Run the Project:**
 
-   ```sh
+   Start all services using Docker Compose:
+
+   ```bash
    docker-compose up --build
    ```
 
-   This command will build the Docker images and start the containers for Kafka, Spark, and the Dash dashboard.
+   This command will:
+   - Spin up Kafka, Zookeeper, and Spark services.
+   - Start the data producer, consumer, and dashboard.
+
+3. **Access the Dashboard:**
+
+   Once the containers are running, open your browser and navigate to:
+   ```
+   http://localhost:8051/
+   ```
+
+---
 
 ## Usage
 
-1. **Access the Dashboard:**
+### Dashboard Features
 
-   Open your web browser and navigate to `http://localhost:8051/` to view the Bitcoin Analytics Dashboard.
+- **Real-Time Price Trends**: Visualize Bitcoin price movements with live updates.
+- **Technical Indicators**: View moving averages, Bollinger Bands, and RSI.
+- **Data Export**: Download processed data as CSV for offline analysis.
 
-2. **Stopping the Containers:**
+### Stopping the Services
 
-   To stop the containers, you can use the following command:
+To stop all running containers, use:
 
-   ```sh
-   docker-compose down
-   ```
+```bash
+docker-compose down
+```
 
-## Architecture
+---
 
-The project follows a pipeline architecture consisting of the following components:
+## Architecture Overview
 
-1. **Producer**: Sends Bitcoin data to a Kafka topic.
-2. **Consumer**: Consumes data from the Kafka topic.
-3. **Spark Streaming**: Processes the data from Kafka, calculates technical indicators, and writes the results to CSV files.
-4. **Dashboard**: Fetches data from the processed CSV files and updates the dashboard in real-time.
+The system is built on a robust pipeline architecture:
+
+1. **Data Producer**:
+   - Fetches live Bitcoin market data and streams it to a Kafka topic.
+
+2. **Apache Kafka**:
+   - Acts as the message broker for real-time data ingestion.
+
+3. **Apache Spark**:
+   - Consumes data from Kafka, processes it in real-time, and calculates technical indicators.
+   - Writes processed data to CSV files for persistence.
+
+4. **Dash Dashboard**:
+   - Fetches data from the processed CSV files and updates the UI in real-time.
+
+---
+
+## Performance Optimization
+
+To ensure high performance and scalability, the following optimizations have been implemented:
+
+- **Kafka Partitioning**: Distributes data across multiple partitions for parallel processing.
+- **Spark Tuning**:
+  - Adjusted `spark.sql.shuffle.partitions` to optimize shuffle operations.
+  - Configured `spark.executor.memory` and `spark.driver.memory` for efficient resource utilization.
+- **Checkpointing**: Enabled Spark checkpointing to ensure fault tolerance and state recovery.
+- **Docker Resource Limits**: Configured Docker Compose to allocate appropriate CPU and memory resources to each service.
+
+---
 
 ## Contributing
 
-NO Contribution available - 😒
+Contributions are welcome! If you'd like to contribute, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/YourFeatureName`).
+3. Commit your changes (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature/YourFeatureName`).
+5. Open a pull request.
+
+---
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+---
 
 ## Contact
 
-Mouad AIT HA------ [linkedin-profile](https://www.linkedin.com/in/mouad-ait-ha-67427521b/) - mouadaitha@gmail.com </br>
+For questions or feedback, feel free to reach out:
 
-Mohamed LAKBAKBI-- [linkedin-profile](https://www.linkedin.com/in/lakbakbi-mohammed) - mohammedlakbakbi@gmail.com
+- **Mouad AIT HA**  
+  [LinkedIn](https://www.linkedin.com/in/mouad-ait-ha-67427521b/) | mouadaitha@gmail.com
 
-Project Link: [https://github.com/MouadAH2003/BitcoinRealTimeDashboard](https://github.com/MouadAH2003/BitcoinRealTimeDashboard)
+- **Mohamed LAKBAKBI**  
+  [LinkedIn](https://www.linkedin.com/in/lakbakbi-mohammed) | mohammedlakbakbi@gmail.com
 
+**Project Link**: [https://github.com/MouadAH2003/BitcoinRealTimeDashboard](https://github.com/MouadAH2003/BitcoinRealTimeDashboard)
 
+---
 
-### Docker Compose File (docker-compose.yml)
+## Acknowledgements
+
+- **Apache Kafka**: For enabling real-time data streaming.
+- **Apache Spark**: For distributed data processing.
+- **Dash/Plotly**: For interactive and responsive visualizations.
+- **Docker**: For simplifying deployment and scalability.
+
+---
+
+### Docker Compose File (`docker-compose.yml`)
 
 ```yaml
+version: '3.8'
+
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -232,14 +303,5 @@ COPY *.csv ./
 
 # The specific Python script to run will be specified in docker-compose.yml
 CMD ["python"]
-
 ```
 
-### Spark Script (run_spark.sh)
-
-```sh
-#!/bin/bash
-
-# Start the Spark job
-spark-submit --master local[*] /app/spark_streaming.py
-```
